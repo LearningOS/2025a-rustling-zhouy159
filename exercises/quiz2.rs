@@ -35,7 +35,7 @@ mod my_module {
     pub fn transformer(input: Vec<(String, Command)>) -> Vec<String> {
         // TODO: Complete the output declaration!
         let mut output: Vec<String> = vec![];
-        for (string, command) in input.iter() {
+        for (string, command) in input {
             // 根据命令处理字符串
             let result = match command {
                 Command::Uppercase => string.to_uppercase(), // 转为全大写
@@ -44,9 +44,12 @@ mod my_module {
                     let append_str = "bar".repeat(n); // 生成n次"bar"
                     format!("{}{}", string, append_str) // 拼接原字符串和追加内容
                 }
-        };
+            };
+            output.push(result);
+        }
         output
     }
+
 }
 
 #[cfg(test)]
