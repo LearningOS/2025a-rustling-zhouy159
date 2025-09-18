@@ -3,8 +3,8 @@
 // Execute `rustlings hint iterators4` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
+//map对迭代器中的每个元素应用一个函数,fold从一个 “初始值” 开始，将迭代器中的所有元素通过一个函数 “累积” 成一个单一结果
 pub fn factorial(num: u64) -> u64 {
     // Complete this function to return the factorial of num
     // Do not use:
@@ -15,6 +15,7 @@ pub fn factorial(num: u64) -> u64 {
     // For an extra challenge, don't use:
     // - recursion
     // Execute `rustlings hint iterators4` for hints.
+    (1..=num).fold(1,|a,b| a*b)
 }
 
 #[cfg(test)]

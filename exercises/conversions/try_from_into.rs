@@ -27,7 +27,7 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
+
 
 // Your task is to complete this implementation and return an Ok result of inner
 // type Color. You need to create an implementation for a tuple of three
@@ -41,6 +41,21 @@ enum IntoColorError {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (red,green,blue)=tuple;
+        let check=|x:i16|->Result<u8, Self::Error>{
+            if x<0||x>255{
+                Err(IntoColorError::IntConversion)
+            }
+            else {
+                Ok(x as u8)
+            }
+        };
+        Ok(Color{
+            red:check(red)?,
+            green:check(green)?,
+            blue:check(blue)?,
+        }
+        )
     }
 }
 
@@ -48,6 +63,25 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let check = |x: i16| -> Result<u8, Self::Error> {
+            if x >= 0 && x <= 255 {
+                Ok(x as u8)
+            } else {
+                Err(IntoColorError::IntConversion)
+            }
+        };
+
+        // 2. 遍历数组，检查每个元素（需收集为 Vec<u8> 方便取值）
+        let channels: Vec<u8> = arr.iter()
+            .map(|&x| check(x)) // 对每个元素执行检查
+            .collect::<Result<Vec<u8>, _>>()?; // 收集结果：失败则返回错误
+
+        // 3. 构造 Color（数组长度固定为3，channels[0/1/2] 一定存在）
+        Ok(Color {
+            red: channels[0],
+            green: channels[1],
+            blue: channels[2],
+    })
     }
 }
 
@@ -55,6 +89,26 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+         // 1. 第一步：检查切片长度是否为 3
+        if slice.len() != 3 {
+            return Err(IntoColorError::BadLen);
+        }
+
+        // 2. 辅助函数（同上）
+        let check = |x: i16| -> Result<u8, Self::Error> {
+            if x >= 0 && x <= 255 {
+                Ok(x as u8)
+            } else {
+                Err(IntoColorError::IntConversion)
+            }
+        };
+
+        // 3. 检查每个元素（切片已确认长度为3，可安全索引）
+        Ok(Color {
+            red: check(slice[0])?,
+            green: check(slice[1])?,
+            blue: check(slice[2])?,
+        })
     }
 }
 
